@@ -3,7 +3,7 @@
 #include <QtGlobal>
 #include <QDebug>
 #include "logger.hpp"
-#include "wp_utils.hpp"
+#include "wp_main.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -12,9 +12,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     qDebug() << "foobarfoo";
-    wp_prepare foo;
-    //foo.show_captcha();
-    //foo.captcha_window.show();
+    WpMain foo;
 
+    qDebug() << "why";
     return app.exec();
 }
