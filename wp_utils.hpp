@@ -1,3 +1,4 @@
+#pragma once
 #include <QString>
 //#include <QStringList>
 #include <QProcess>
@@ -20,6 +21,7 @@
 #include "wp_utils_types.hpp"
 #include "ui_captcha.h"
 #include "wp_js_parser.hpp"
+#include "wp_settings.hpp"
 
 
 
@@ -45,15 +47,16 @@ static url_type
     //"name";
 
 
-class wp_prepare:public QObject
+class WpPrepare:public QObject
 {
     Q_OBJECT
 
 
     //process_type js_parser;
 
+    const WpSettings *settings;
     map_string_type session_variables;
-    map_string_type settings;
+    //map_string_type settings;
     widget_type captcha_widget;
     image_type captcha;
 
@@ -69,12 +72,12 @@ class wp_prepare:public QObject
     signals:
     void captcha_typed_in();
     void params_to_dictionary_finished();
-    void wp_prepare_finished();
+    void finished();
 
 
 
     public:
-    wp_prepare();
+    WpPrepare(const WpSettings &wp_settings);
     label_type captcha_window;
     public slots:
     void get_html();

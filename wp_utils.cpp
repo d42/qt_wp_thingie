@@ -9,9 +9,9 @@
 //static url_type html_ticket_url("http://czati1.wp.pl/getticket.html");
 
 
-wp_prepare::wp_prepare()
+WpPrepare::WpPrepare(const WpSettings &wp_settings):settings(&wp_settings)
 {
-    this->settings["nick"] = "ania12lat";
+    //this->settings["nick"] = "ania12lat";
     this->choose_js_parser();
     connect(this, SIGNAL(captcha_typed_in()),
             this, SLOT(get_html()));
@@ -27,15 +27,16 @@ wp_prepare::wp_prepare()
 }
 
 void
-wp_prepare::get_html()
+WpPrepare::get_html()
 {
     qDebug()  << "get_html";
     url_type params_post;
+
     encode_query<string_type>(params_post, 
             "i","1",
             "regulamin","tak",
             "auth","nie", //TODO: handle registered nicknames.
-            "nick", settings["nick"], //TODO: load nickname from settings file
+            "nick", settings->get_nick(), //TODO: load nickname from settings file
             "simg", this->session_variables["captcha"],
             "x","52",
             "y","12"
@@ -51,7 +52,7 @@ wp_prepare::get_html()
 }
 
 void
-wp_prepare::get_html_finished()
+WpPrepare::get_html_finished()
 {
     qDebug() << "get_html_finished";
 
@@ -79,7 +80,7 @@ wp_prepare::get_html_finished()
 }
 
 void
-wp_prepare::get_captcha(const url_type &captcha_url /*=captcha_url */)
+WpPrepare::get_captcha(const url_type &captcha_url /*=captcha_url */)
 {
     network_request_type request;
 
@@ -95,7 +96,7 @@ wp_prepare::get_captcha(const url_type &captcha_url /*=captcha_url */)
 
 
 void
-wp_prepare::get_captcha_finished()
+WpPrepare::get_captcha_finished()
 {
     //FIXME: error handling
     network_reply_type *reply  = qobject_cast<network_reply_type *> (sender());
@@ -122,7 +123,7 @@ wp_prepare::get_captcha_finished()
 }
 
 void
-wp_prepare::captcha_resolve()
+WpPrepare::captcha_resolve()
 {
     Ui_captcha_form ui;
     ui.setupUi(&captcha_widget);
@@ -136,7 +137,7 @@ wp_prepare::captcha_resolve()
 
 }
 void
-wp_prepare::captcha_input()
+WpPrepare::captcha_input()
 {
     qDebug() << "captcha_input ";
     line_edit_type *captcha = qobject_cast<line_edit_type*>(sender());
@@ -149,7 +150,7 @@ wp_prepare::captcha_input()
 
 
 void
-wp_prepare::choose_js_parser()
+WpPrepare::choose_js_parser()
 {
     qDebug() <<"choose_js_parser";
 
@@ -168,7 +169,7 @@ wp_prepare::choose_js_parser()
 }
 
 void
-wp_prepare::js_parser_finished()
+WpPrepare::js_parser_finished()
 {
     qDebug() << "js_parser_finished";
     process_type *p = qobject_cast<process_type *>(sender());
@@ -179,7 +180,7 @@ wp_prepare::js_parser_finished()
 }
 
 void
-wp_prepare::params_to_dictionary(const string_type &params)
+WpPrepare::params_to_dictionary(const string_type &params)
 {
 
     qDebug() << "params_to_dictionary";
@@ -200,7 +201,7 @@ wp_prepare::params_to_dictionary(const string_type &params)
 
 }
 void
-wp_prepare::get_ticket()
+WpPrepare::get_ticket()
 {
     url_type params_get(html_ticket_url);
 
@@ -214,9 +215,18 @@ wp_prepare::get_ticket()
     }
 
 
+    string_type query_nick;
     network_request_type request;
 
-    string_type query_nick = string_type("~%1").arg(settings["nick"]);
+    if(settings->get_auth())
+    {
+
+    }
+    else
+    {
+        query_nick = string_type("~%1").arg(settings->get_nick());
+    }
+
     encode_query<string_type>(params_get,
             "nick", query_nick,
             "wpdticket", session_variables["wpdticket"],
@@ -238,14 +248,14 @@ wp_prepare::get_ticket()
 }
 
 void 
-wp_prepare::get_ticket_finished()
+WpPrepare::get_ticket_finished()
 {
     bytes_type r = reply->readAll();
     r.chop(1);
     qDebug() << r.toPercentEncoding();
     this->session_variables["ticket"] = r;
 
-    emit wp_prepare_finished();
+    emit finished();
 
         
         //.chop(1).toPercentEncoding();

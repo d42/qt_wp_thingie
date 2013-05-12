@@ -1,8 +1,12 @@
 #include "wp_utils.hpp"
+#include "wp_settings.hpp"
+#include "wp_irc.hpp"
 class WpMain:public object_type
 {
     Q_OBJECT
-        wp_prepare *wp;
+    WpPrepare *wp_prepare;
+    WpIRC *wp_irc;
+    WpSettings wp_settings;
 
 
 
@@ -10,6 +14,7 @@ class WpMain:public object_type
         void connect_to_server();
     public:
         WpMain();
+        void make_connection();
 
 
 };

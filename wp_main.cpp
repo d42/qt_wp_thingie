@@ -19,8 +19,11 @@
 WpMain::WpMain()
 {
 
-    wp = new wp_prepare;
-    connect(wp, SIGNAL(wp_prepare_finished()),
+
+    wp_prepare = new WpPrepare(wp_settings);
+    wp_irc = new WpIRC(wp_settings);
+    
+    connect(wp_prepare, SIGNAL(finished()),
             this, SLOT(connect_to_server()));
 }
 
@@ -29,5 +32,11 @@ WpMain::connect_to_server()
 {
     qDebug() << "dupadupadupa";
 
+
+}
+
+void
+WpMain::make_connection()
+{
 
 }
