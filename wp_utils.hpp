@@ -1,5 +1,6 @@
 #pragma once
 #include <QString>
+#include <QChar>
 //#include <QStringList>
 #include <QProcess>
 #include <QUrl>
@@ -114,3 +115,9 @@ encode_query(url_type &url,  const s &key, const s &value)
 //{
 
 //}
+//
+
+string_type nick_to_wp(const string_type &nick, bool auth=false);
+string_type nick_from_wp(const string_type &nick);
+
+

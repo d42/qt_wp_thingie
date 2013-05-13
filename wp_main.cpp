@@ -25,13 +25,16 @@ WpMain::WpMain()
     
     connect(wp_prepare, SIGNAL(finished()),
             this, SLOT(connect_to_server()));
+
+    //connect(irc_connection, SIGNAL(connected()),
+            //this, SLOT())
 }
 
 void
 WpMain::connect_to_server()
 {
     qDebug() << "dupadupadupa";
-
+    this->wp_irc->connect();
 
 }
 

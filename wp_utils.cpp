@@ -31,6 +31,7 @@ WpPrepare::get_html()
 {
     qDebug()  << "get_html";
     url_type params_post;
+    qDebug() << settings->get_nick();
 
     encode_query<string_type>(params_post, 
             "i","1",
@@ -58,6 +59,7 @@ WpPrepare::get_html_finished()
 
     reply  = qobject_cast<network_reply_type *> (sender());
     string_type html_string(reply->readAll());
+    qDebug() << html_string;
 
 
     //disregard DOM, acquire JS
@@ -259,4 +261,57 @@ WpPrepare::get_ticket_finished()
 
         
         //.chop(1).toPercentEncoding();
+}
+
+string_type nick_to_wp(const string_type &nick, bool auth)
+{
+    string_type pol_chars = string_type::fromUtf8("ęóąśłżźćń.:;!@#$%^&*()");
+    string_type int_chars("eoaslzxcnkdf1234567890");
+
+    //pl_in  = u"eoaslzxcnkdf1234567890"
+    //pl_out = u"ęóąśłżźćń.:;!@#$%^&*()"
+
+    //TODO: make it do weird stuff
+    unsigned len = (1 + nick.length()/2); //TODO: more testing
+    len = (len % 2 ? len+1 : len);
+    string_type cap_letters;
+    string_type pol_letters;
+    cap_letters.reserve(len/2);
+    pol_letters.reserve(len/2);
+    string_type formatted_nick;
+    formatted_nick.reserve(len+nick.length()+1);
+    if(!auth)
+    {
+        formatted_nick.append("a");
+    }
+    for(auto &x_p: nick)
+    {
+        char_type x(x_p); //TODO: find a better way to lose const.
+        if(x.isUpper())
+        {
+            cap_letters.append("1");
+            x = x.toLower();
+        }
+        else
+        {
+            cap_letters.append("0");
+        }
+        if(int pos = pol_chars.indexOf(x) != -1)
+        {
+            x = int_chars.at(pos);
+            pol_letters.append("1");
+        }
+        else
+        {
+            pol_letters.append("0");
+
+        }
+        formatted_nick.append(x);
+    }
+    bool ok = false;
+    pol_letters = string_type::number(pol_letters.toInt(&ok, 2),16).leftJustified(len/2,'0');
+    cap_letters = string_type::number(cap_letters.toInt(&ok, 2),16).leftJustified(len/2,'0');
+    return string_type("%1|%2%3").arg(formatted_nick).arg(pol_letters).arg(cap_letters);
+
+
 }

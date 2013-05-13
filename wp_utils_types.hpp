@@ -1,6 +1,7 @@
 //container types
 typedef QString string_type;
 typedef QUrl url_type;
+typedef QChar char_type;
 typedef QByteArray bytes_type;
 typedef QPixmap image_type;
 typedef QTextStream text_stream_type;

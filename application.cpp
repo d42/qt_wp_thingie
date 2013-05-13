@@ -11,9 +11,11 @@ int main(int argc, char *argv[])
     //QApplication::setApplicationName("wp-bott");
     QApplication app(argc, argv);
 
-    qDebug() << "foobarfoo";
     WpMain foo;
 
-    qDebug() << "why";
+    //nick_to_wp("dupa");
+    //nick_to_wp(QString::fromUtf8("dupaDópa"));
+
+    //qDebug() << "why";
     return app.exec();
 }
