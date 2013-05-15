@@ -1,18 +1,3 @@
-// =====================================================================================
-// 
-//       Filename:  wp_js_parser.hpp
-// 
-//    Description:  
-// 
-//        Version:  1.0
-//        Created:  05/10/2013 05:00:40 PM
-//       Revision:  none
-//       Compiler:  g++
-// 
-//         Author:  DaZ (), daz.root@gmail.com
-//        Company:  
-// 
-// =====================================================================================
 #include <QString>
 #include <QProcess>
 #include <QStringList>
