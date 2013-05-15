@@ -10,10 +10,11 @@ class WpMain:public object_type
 
 
 
-    public slots:
+    private slots:
         void connect_to_server();
     public:
         WpMain();
+        ~WpMain();
         void make_connection();
 
 

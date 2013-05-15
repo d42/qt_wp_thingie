@@ -12,7 +12,7 @@
 //         Author:  DaZ (), daz.root@gmail.com
 //        Company:  
 // 
-// ==================o#===================================================================
+// =======================================================================================
 #include "wp_main.hpp"
 
 
@@ -21,21 +21,21 @@ WpMain::WpMain()
 
 
     wp_prepare = new WpPrepare(wp_settings);
-    wp_irc = new WpIRC(wp_settings);
+    wp_irc = new WpIRC(wp_settings, wp_prepare);
     
     connect(wp_prepare, SIGNAL(finished()),
             this, SLOT(connect_to_server()));
+}
 
-    //connect(irc_connection, SIGNAL(connected()),
-            //this, SLOT())
+WpMain::~WpMain()
+{
+
 }
 
 void
 WpMain::connect_to_server()
 {
-    qDebug() << "dupadupadupa";
     this->wp_irc->connect();
-
 }
 
 void
@@ -43,3 +43,4 @@ WpMain::make_connection()
 {
 
 }
+

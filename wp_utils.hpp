@@ -8,7 +8,6 @@
 #include <QNetworkCookieJar>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QProcess>
 #include <QPixmap>
 #include <QWidget>
 #include <QLabel>
@@ -18,6 +17,7 @@
 #include <QObject>
 #include <QMap>
 #include <QLineEdit>
+#include <QProcess>
 #include <iostream>
 #include "wp_utils_types.hpp"
 #include "ui_captcha.h"
@@ -38,14 +38,8 @@ static url_type
 static url_type 
     captcha_url("http://si.wp.pl/obrazek?width=200&height=60&fSize=27&sn=czat");
 
-    static string_type param_regexp = 
-    //"name=\"(.+)\" value=\"(.+)\"";
+static string_type param_regexp = 
     "name=\"(%1)\" value=\"(.+)\"";
-    //static string_type param_regexp = 
-    //"name=\"(.*)\" value=\"(.*)\"";
-    //
-    //static string_type param_regexp =
-    //"name";
 
 
 class WpPrepare:public QObject
@@ -53,11 +47,9 @@ class WpPrepare:public QObject
     Q_OBJECT
 
 
-    //process_type js_parser;
 
     const WpSettings *settings;
     map_string_type session_variables;
-    //map_string_type settings;
     widget_type captcha_widget;
     image_type captcha;
 
@@ -79,7 +71,11 @@ class WpPrepare:public QObject
 
     public:
     WpPrepare(const WpSettings &wp_settings);
+    ~WpPrepare();
     label_type captcha_window;
+
+    string_type get_magic()const;
+    string_type get_ticket()const;
     public slots:
     void get_html();
     void get_ticket();
@@ -110,12 +106,6 @@ encode_query(url_type &url,  const s &key, const s &value)
     return url;
 }
 
-//string_type
-//Hasher(const list_type &magic, const list_type &salt)
-//{
-
-//}
-//
 
 string_type nick_to_wp(const string_type &nick, bool auth=false);
 string_type nick_from_wp(const string_type &nick);
