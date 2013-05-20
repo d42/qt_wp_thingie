@@ -1,3 +1,4 @@
+#pragma once
 #include "wp_utils.hpp"
 #include "wp_settings.hpp"
 #include "wp_irc.hpp"
@@ -16,6 +17,4 @@ class WpMain:public object_type
         WpMain();
         ~WpMain();
         void make_connection();
-
-
 };

@@ -2,7 +2,6 @@
 #include <QProcess>
 #include <QStringList>
 #include <QObject>
-#include <QDebug>
 #include "wp_js_parser_types.hpp"
 
 
@@ -21,6 +20,7 @@ class abstract_js_parser:public object_type
 
     public:
         abstract_js_parser(object_type *parent=0);
+        //~abstract_js_parser();
         virtual void parse(const string_type &js)=0;
 };
 

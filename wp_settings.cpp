@@ -6,7 +6,6 @@ static string_type config_name =
 WpSettings::WpSettings():wp_settings(config_name, settings_type::IniFormat)
 {
     set_defaults();
-
 }
 string_type
 WpSettings::get_nick()const
@@ -18,7 +17,6 @@ WpSettings::get_auth()const
 {
     if(wp_settings.value("irc/auth").toBool()) //TODO: authorization
     {
-        qDebug() << "authorization unsupported ";
         return false;
     }
     return this->wp_settings.value("all/auth").toBool();
