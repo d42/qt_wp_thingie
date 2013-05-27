@@ -19,4 +19,3 @@ class WpSettings
         void set_defaults();
         list_type get_channels()const;
 };
-

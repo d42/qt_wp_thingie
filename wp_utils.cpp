@@ -36,15 +36,15 @@ WpPrepare::get_html()
     qDebug()  << "get_html";
     url_type params_post;
 
-    encode_query<string_type>(params_post, 
-            "i","1",
-            "regulamin","tak",
-            "auth","nie", //TODO: handle registered nicknames.
-            "nick", settings->get_nick(), //TODO: load nickname from settings file
-            "simg", this->session_variables["captcha"],
-            "x","52",
-            "y","12"
-            );
+    //encode_query<string_type>(params_post, 
+    params_post.addQueryItem("i","1");
+    params_post.addQueryItem(        "regulamin","tak");
+    params_post.addQueryItem("auth",(settings->get_auth()? "tak":"nie"));
+    params_post.addQueryItem("nick", settings->get_nick());
+    params_post.addQueryItem("simg", this->session_variables["captcha"]);
+    params_post.addQueryItem("x","52");
+    params_post.addQueryItem("y","12");
+            //),c ;
 
     network_request_type request;
     request.setUrl(html_applet_url);

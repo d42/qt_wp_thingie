@@ -7,7 +7,7 @@
 #include "wp_logger.hpp"
 #include "wp_irc_types.hpp"
 #include "wp_settings.hpp"
-#include "hasher.hpp"
+#include "wp_hasher.hpp"
 
 
 
@@ -18,7 +18,7 @@ class WpIRC:public object_type
 
     const WpPrepare *parent;
     const WpSettings *wp_settings;
-    tcp_socket_type *irc_connection;
+    tcp_socket_type irc_connection;
     map_list_type parse_msg(string_type line)const;
 
     public:

@@ -12,15 +12,15 @@ WpIRC::~WpIRC()
 void
 WpIRC::connect()
 {
-    irc_connection = new tcp_socket_type(this);
-    irc_connection->connectToHost(
+    //irc_connection = new tcp_socket_type(this);
+    irc_connection.connectToHost(
             this->wp_settings->get_server(),
             this->wp_settings->get_port()
             );
 
-    object_type::connect(irc_connection, SIGNAL(connected()),
+    object_type::connect(&irc_connection, SIGNAL(connected()),
             this, SLOT(on_connect()));
-    object_type::connect(irc_connection, SIGNAL(readyRead()),
+    object_type::connect(&irc_connection, SIGNAL(readyRead()),
             this, SLOT(on_incoming_data()));
 
 
@@ -45,7 +45,7 @@ WpIRC::on_incoming_data()
 {
     qDebug() << "on_incoming_data";
     string_type line;
-    line = irc_connection->readLine();
+    line = irc_connection.readLine();
     map_list_type parsed_line(this->parse_msg(line));
 
 
@@ -57,7 +57,7 @@ WpIRC::on_incoming_data()
     }
     //qDebug() << line;
 
-    if(irc_connection->canReadLine())
+    if(irc_connection.canReadLine())
     {
         on_incoming_data();
     }
@@ -118,7 +118,7 @@ WpIRC::send_data(const string_type &line)
 
     string_type newline("%1\r\n");
 
-    this->irc_connection->write(newline.arg(line).toAscii());
+    this->irc_connection.write(newline.arg(line).toAscii());
 
 }
 void

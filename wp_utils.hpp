@@ -91,20 +91,20 @@ class WpPrepare:public QObject
 
 
 //TODO: not in the damn headers
-template<typename s, typename... Args>
-url_type&
-encode_query(url_type &url,  const s &key, const s &value, Args... args )
-{
-    encode_query(url, key, value);
-    return encode_query<s>(url, args...);
-}
-template<typename s>
-url_type&
-encode_query(url_type &url,  const s &key, const s &value)
-{
-    url.addQueryItem(key, value);
-    return url;
-}
+//template<typename s, typename... Args>
+//url_type&
+//encode_query(url_type &url,  const s &key, const s &value, Args... args )
+//{
+    //encode_query(url, key, value);
+    //return encode_query<s>(url, args...);
+//}
+//template<typename s>
+//url_type&
+//encode_query(url_type &url,  const s &key, const s &value)
+//{
+    //url.addQueryItem(key, value);
+    //return url;
+//}
 
 
 string_type nick_to_wp(const string_type &nick, bool auth=false);
