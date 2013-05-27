@@ -76,8 +76,7 @@ class WpPrepare:public QObject
 
     string_type get_magic()const;
     string_type get_ticket()const;
-
-    private slots:
+    public slots:
     void get_html();
     void get_ticket();
     void get_html_finished();
@@ -106,6 +105,7 @@ encode_query(url_type &url,  const s &key, const s &value)
     url.addQueryItem(key, value);
     return url;
 }
+
 
 string_type nick_to_wp(const string_type &nick, bool auth=false);
 string_type nick_from_wp(const string_type &nick);

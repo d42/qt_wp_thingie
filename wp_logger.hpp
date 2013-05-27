@@ -1,4 +1,3 @@
-#pragma once
 #include <QTextStream>
 #include <QFile>
 #include "logger_types.hpp"

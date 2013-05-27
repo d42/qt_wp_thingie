@@ -6,15 +6,13 @@ WpIRC::WpIRC(const WpSettings &wp_settings, WpPrepare *parent):parent(parent),wp
 }
 WpIRC::~WpIRC()
 {
-    if(irc_connection)
-        delete irc_connection;
+
 }
 
 void
 WpIRC::connect()
 {
-
-    //irc_connection = new tcp_socket_type(this);
+    irc_connection = new tcp_socket_type(this);
     irc_connection->connectToHost(
             this->wp_settings->get_server(),
             this->wp_settings->get_port()
@@ -24,11 +22,8 @@ WpIRC::connect()
             this, SLOT(on_connect()));
     object_type::connect(irc_connection, SIGNAL(readyRead()),
             this, SLOT(on_incoming_data()));
-}
 
-WpIRC::WpIRC(WpIRC &w)
-{
-    qDebug() <<"doing shit alright";
+
 }
 
 void
@@ -111,11 +106,11 @@ WpIRC::parse_msg(string_type line)const
 
     }
 
+
     return return_map;
 
 }
 
-/*  ************************************************************************* */
 void
 WpIRC::send_data(const string_type &line)
 {
@@ -124,6 +119,13 @@ WpIRC::send_data(const string_type &line)
     string_type newline("%1\r\n");
 
     this->irc_connection->write(newline.arg(line).toAscii());
+
+}
+void
+WpIRC::IRC_on_magic(const map_list_type &parsed_line)
+{
+    qDebug() << "IRC_on_magic";
+    this->send_magic(parent->get_magic(), parsed_line["args"][0]);
 
 }
 void 
@@ -139,14 +141,5 @@ WpIRC::send_pass(const string_type &pass)
 {
 string_type line("PASS %1");
     this->send_data(line.arg(string_type(pass.toAscii().toPercentEncoding())));
-
-}
-
-/*  ************************************************************************* */
-void
-WpIRC::IRC_on_magic(const map_list_type &parsed_line)
-{
-    qDebug() << "IRC_on_magic";
-    this->send_magic(parent->get_magic(), parsed_line["args"][0]);
 
 }

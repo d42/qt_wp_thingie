@@ -1,4 +1,3 @@
-#pragma once
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
@@ -19,18 +18,14 @@ class WpIRC:public object_type
 
     const WpPrepare *parent;
     const WpSettings *wp_settings;
-    mutable tcp_socket_type irc_connection;
+    tcp_socket_type *irc_connection;
     map_list_type parse_msg(string_type line)const;
 
     public:
-    WpIRC(){};
     WpIRC(const WpSettings &wp_settings, WpPrepare *parent = 0);
-    WpIRC(WpIRC &w);
     ~WpIRC();
     void set_nick(const string_type &nick);
     void set_realname(const string_type );
-
-    /* ********************************************************************** */
     void send_nick(const string_type &nick); //TODO: separate non-const send 
     void send_user(const string_type &username, const string_type &realname, const string_type &hostname);
     void send_pass(const string_type &pass);
@@ -40,21 +35,14 @@ class WpIRC:public object_type
     void send_pong(const string_type &message);
     void send_raw(const string_type &message);
     void send_privmsg(const string_type &target, const string_type &message);
-    /* ********************************************************************** */
-
     void connect();
     
     private:
         void send_data(const string_type &line);
 
 
-    /* ********************************************************************** */
-        //on incoming 
         void IRC_on_magic(const map_list_type &parsed_line);
-        void IRC_on_375 (const map_list_type &parset_line);
-        //void IRC_on_ const map_list_type &parset_line);
 
-    /* ********************************************************************** */
     private slots:
 
 
