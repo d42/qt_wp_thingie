@@ -1,7 +1,7 @@
 #pragma once
 #include <QString>
 #include <QChar>
-//#include <QStringList>
+#include <QStringList>
 #include <QProcess>
 #include <QUrl>
 #include <QNetworkAccessManager>
@@ -20,6 +20,7 @@
 #include <QProcess>
 #include <iostream>
 #include "wp_utils_types.hpp"
+#include "wp_utils_exceptions.hpp"
 #include "ui_captcha.h"
 #include "wp_js_parser.hpp"
 #include "wp_settings.hpp"

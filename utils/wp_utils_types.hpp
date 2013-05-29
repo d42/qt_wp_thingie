@@ -6,6 +6,7 @@ typedef QByteArray bytes_type;
 typedef QPixmap image_type;
 typedef QTextStream text_stream_type;
 typedef QRegExp regexp_type;
+typedef QStringList string_list;
 
 typedef QFile file_type;
 

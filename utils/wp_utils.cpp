@@ -38,7 +38,7 @@ WpPrepare::get_html()
 
     //encode_query<string_type>(params_post, 
     params_post.addQueryItem("i","1");
-    params_post.addQueryItem(        "regulamin","tak");
+    params_post.addQueryItem("regulamin","tak");
     params_post.addQueryItem("auth",(settings->get_auth()? "tak":"nie"));
     params_post.addQueryItem("nick", settings->get_nick());
     params_post.addQueryItem("simg", this->session_variables["captcha"]);
@@ -61,7 +61,6 @@ WpPrepare::get_html()
 void
 WpPrepare::get_html_finished()
 {
-    qDebug() << "get_html_finished";
 
     reply  = qobject_cast<network_reply_type *> (sender());
     string_type html_string(reply->readAll());
@@ -72,9 +71,7 @@ WpPrepare::get_html_finished()
     int end = html_string.indexOf(";//",start) - 21;
     if(start == -1)
     {
-        qDebug() << "bad captcha code";
-        qApp->quit();
-        //FIXME:
+        this->get_captcha(); //FIXME: displays kind of borked
 
     }
     else
@@ -122,7 +119,7 @@ WpPrepare::get_captcha_finished()
 
         if(this->captcha.size().isEmpty())
         {
-            qDebug() << "zomfg, something went wrong!";
+            throw captcha_is_empty_exception();
         }
         this->captcha_resolve();
         }
@@ -155,26 +152,20 @@ WpPrepare::captcha_input()
 void
 WpPrepare::choose_js_parser()
 {
-    qDebug() <<"choose_js_parser";
-
     if(file_type(node_path).exists())
     {
         js_parser = new node_js_parser(this);
     }
     else
     {
-        qDebug() << "zomfgfail";
+        throw no_js_parser_avail_exception();
 
     }
-
-
-
 }
 
 void
 WpPrepare::js_parser_finished()
 {
-    qDebug() << "js_parser_finished";
     process_type *p = qobject_cast<process_type *>(sender());
     this->params_to_dictionary(p->readAllStandardOutput());
 }
@@ -183,7 +174,6 @@ void
 WpPrepare::params_to_dictionary(const string_type &params)
 {
 
-    qDebug() << "params_to_dictionary";
 
     regexp_type re;
 
@@ -255,10 +245,12 @@ WpPrepare::get_ticket_finished()
     emit finished();
 }
 
-string_type nick_to_wp(const string_type &nick, bool auth)
-{
     string_type pol_chars = string_type::fromUtf8("ęóąśłżźćń.:;!@#$%^&*()");
     string_type int_chars("eoaslzxcnkdf1234567890");
+
+string_type
+nick_to_wp(const string_type &nick, bool auth)
+{
 
 
     //TODO: make it do weird stuff
@@ -276,7 +268,7 @@ string_type nick_to_wp(const string_type &nick, bool auth)
     }
     for(auto &x_p: nick)
     {
-        char_type x(x_p); //TODO: find a better way to lose const.
+        char_type x(x_p); //TODO: can i make this less retarded
         if(x.isUpper())
         {
             cap_letters.append("1");
@@ -299,13 +291,57 @@ string_type nick_to_wp(const string_type &nick, bool auth)
         formatted_nick.append(x);
     }
     bool ok = false;
-    pol_letters = string_type::number(pol_letters.toInt(&ok, 2),16).leftJustified(len/2,'0');
-    cap_letters = string_type::number(cap_letters.toInt(&ok, 2),16).leftJustified(len/2,'0');
+    pol_letters = string_type::number(pol_letters.toInt(&ok, 2),16).rightJustified(len/2,'0');
+    cap_letters = string_type::number(cap_letters.toInt(&ok, 2),16).rightJustified(len/2,'0');
     return string_type("%1|%2%3").arg(formatted_nick).arg(pol_letters).arg(cap_letters);
 
 
 }
 
+
+string_type
+nick_from_wp(const string_type &nickname)
+{
+    //qDebug() << pol_chars  << int_chars;
+    if(!nickname.contains('|'))
+    {
+        return nickname;
+    }
+
+    string_list nick_list = nickname.split('|');
+    string_type nick = nick_list[0].mid(1);
+    string_type &nick2= nick_list[1];
+    unsigned len = nick.length()/2;
+
+    if(len%2)
+    {
+        len += 1;
+    }
+    //qDebug() << len;
+    unsigned caps = nick2.left(len/2).toUInt(0,16);
+    unsigned pols = nick2.right(len/2).toUInt(0,16);
+
+    unsigned christian_magic =  (len*2 + ((len*2)%4)-1);
+    unsigned mask = 1;
+    mask <<= christian_magic;
+
+
+    for (unsigned i = 0; i < len*2; i++)
+    {
+        if((pols & mask))
+        {
+            nick[i] = pol_chars[int_chars.indexOf(nick[i])];
+        }
+        if((caps & mask)) 
+        {
+            nick[i] = nick[i].toUpper();
+
+        }
+        mask >>= 1;
+    }
+    string_type bitfield = string_type::number(nick2.toLongLong(0, 16), 2);
+    return nick;
+}
 
 string_type
 WpPrepare::get_magic()const

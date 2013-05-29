@@ -14,7 +14,10 @@ class WpSettings
         WpSettings();
         string_type get_nick()const;
         bool get_auth()const;
+        bool get_log_enabled()const;
         string_type get_server()const;
+        string_type get_path()const;
+        string_type get_timeformat()const;
         unsigned get_port()const;
         void set_defaults();
         list_type get_channels()const;

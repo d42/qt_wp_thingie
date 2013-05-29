@@ -22,8 +22,16 @@ WpSettings::get_auth()const
         return false;
     }
     return this->wp_settings.value("all/auth").toBool();
-
 }
+
+
+bool
+WpSettings::get_log_enabled()const
+{
+    //if(wp_settings.value("log/enabled").toBool()) //TODO: authorization
+    return this->wp_settings.value("log/enabled").toBool();
+}
+
 
 string_type
 WpSettings::get_server()const
@@ -31,6 +39,20 @@ WpSettings::get_server()const
     return this->wp_settings.value("irc/server").toString();
 
 }
+
+string_type
+WpSettings::get_path()const
+{
+    return this->wp_settings.value("log/path").toString();
+}
+
+
+string_type
+WpSettings::get_timeformat()const
+{
+    return this->wp_settings.value("log/timeformat").toString();
+}
+
 unsigned
 WpSettings::get_port()const
 {
@@ -42,7 +64,6 @@ list_type
 WpSettings::get_channels()const
 {
     return this->wp_settings.value("irc/channels").toString().split(",");
-
 }
 
 void
@@ -57,6 +78,7 @@ WpSettings::set_defaults()
     d.insert("irc/port", "5579");
     d.insert("log/enabled", "false");
     d.insert("log/path", "foo/");
+    d.insert("log/timeformat", "HH:mm:ss");
 
 
     for(auto &x: d.uniqueKeys())

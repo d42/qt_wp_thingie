@@ -34,37 +34,40 @@ hasher(const string_type &magic, const string_type &salt)
         a = salt.mid(i&7,1).toInt(&foo, 16);
         //qDebug() << a << b;
 
-        if(b > 57)
-        {
-            b -= 87;
-        }
-        else
-        {
-            b -= 48;
+        //if(b > 57)
+        //{
+            //b -= 87;
+        //}
+        //else
+        //{
+            //b -= 48;
 
-        }
+        //}o
+        //
+        (b > 57)? b -= 87 : b -=48;
+        (a > 57)? a -= 87 : a -=48;
 
 
-        if(a > 57)
-        {
-            a -= 87;
-        }
-        else
-        {
-            a -= 48;
-        }
-
-        //qDebug() << a << b;
+        //if(a > 57)
+        //{
+            //a -= 87;
+        //}
+        //else
+        //{
+            //a -= 48;
+        //}
 
         b = (((b ^ q[i] ^ a ) + r[i]) & 0xf);
-        if(b > 9)
-        {
-            b += 87;
-        }
-        else
-        {
-            b += 48;
-        }
+
+        (b > 9)? b += 87 : b += 48;
+        //if(b > 9)
+        //{
+            //b += 87;
+        //}
+        //else
+        //{
+            //b += 48;
+        //}
 
 
         /* code */
