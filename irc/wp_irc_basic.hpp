@@ -35,14 +35,14 @@ class WpIRCBase:public object_type
 
 
     codec_type *codec;
-    const WpPrepare *parent;
-    const WpSettings *wp_settings;
+    const utils::WpPrepare *parent;
+    const settings::WpSettings *wp_settings;
     tcp_socket_type irc_connection;
     map_list_type parse_msg(string_type line)const;
     void handle_command(const map_list_type &parsed_line);
 
     public:
-        WpIRCBase(const WpSettings &wp_settings, WpPrepare *parent = 0);
+        WpIRCBase(const settings::WpSettings &wp_settings, utils::WpPrepare *parent = 0);
         ~WpIRCBase();
         void join_channels();
         void set_nick(const string_type &nick);
@@ -72,6 +72,7 @@ class WpIRCBase:public object_type
         virtual void IRC_on_484(const map_list_type &parsed_line); //logged in
         virtual void IRC_on_433(const map_list_type &parsed_line); //nickname in use
         virtual void IRC_on_notice(const map_list_type &parsed_line); //nickname in use
+        virtual void IRC_on_umagic(const map_list_type &parsed_line); //nickname in use
         //void IRC_on_(const map_list_type &parsed_line);
 
     private slots:

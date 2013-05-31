@@ -1,5 +1,9 @@
 #include "wp_settings.hpp"
 
+
+namespace settings
+{
+
 static string_type config_name =
     "wpirc.conf";
 
@@ -27,44 +31,22 @@ WpSettings::get_auth()const
 
 bool
 WpSettings::get_log_enabled()const
-{
-    //if(wp_settings.value("log/enabled").toBool()) //TODO: authorization
-    return this->wp_settings.value("log/enabled").toBool();
-}
-
-
+{ return this->wp_settings.value("log/enabled").toBool();}
 string_type
 WpSettings::get_server()const
-{
-    return this->wp_settings.value("irc/server").toString();
-
-}
-
+{ return this->wp_settings.value("irc/server").toString(); }
 string_type
 WpSettings::get_path()const
-{
-    return this->wp_settings.value("log/path").toString();
-}
-
-
+{ return this->wp_settings.value("log/path").toString(); }
 string_type
 WpSettings::get_timeformat()const
-{
-    return this->wp_settings.value("log/timeformat").toString();
-}
-
+{ return this->wp_settings.value("log/timeformat").toString();}
 unsigned
 WpSettings::get_port()const
-{
-    return this->wp_settings.value("irc/port").toUInt();
-}
-
-
+{ return this->wp_settings.value("irc/port").toUInt();}
 list_type
 WpSettings::get_channels()const
-{
-    return this->wp_settings.value("irc/channels").toString().split(",");
-}
+{ return this->wp_settings.value("irc/channels").toString().split(",");}
 
 void
 WpSettings::set_defaults()
@@ -87,7 +69,7 @@ WpSettings::set_defaults()
         {
             wp_settings.setValue(x, d[x]);
         }
-
     }
     wp_settings.sync();
+}
 }

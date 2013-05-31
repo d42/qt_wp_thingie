@@ -1,6 +1,8 @@
 #include "wp_js_parser.hpp"
 
 
+namespace utils
+{
 
 abstract_js_parser::abstract_js_parser(object_type *parent):parent(parent)
 {
@@ -22,4 +24,5 @@ node_js_parser::parse(const string_type &js)
             this->parent, SLOT(js_parser_finished()));
 
     p.start(node_path,(node_params << js_console ));
+}
 }

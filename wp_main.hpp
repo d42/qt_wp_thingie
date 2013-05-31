@@ -4,9 +4,10 @@
 class WpMain:public object_type
 {
     Q_OBJECT
-    WpPrepare wp_prepare;
+    utils::WpPrepare wp_prepare;
     irc::WpIRC wp_irc;
-    WpSettings wp_settings;
+    settings::WpSettings wp_settings;
+    WpMain(WpMain &w);
 
     private slots:
         void connect_to_server();

@@ -15,22 +15,22 @@
 // =====================================================================================
 #include "wp_irc_basic.hpp"
 
-namespace irc 
+namespace irc
 {
 
-WpIRCBase::WpIRCBase(const WpSettings &wp_settings, WpPrepare *parent):parent(parent),wp_settings(&wp_settings),wp_logger(wp_settings)
+string_type realname("USER 192.128.1.2 8 %1 :Czat-Applet");
+
+WpIRCBase::WpIRCBase(const settings::WpSettings &wp_settings, utils::WpPrepare *parent):parent(parent),wp_settings(&wp_settings),wp_logger(wp_settings)
 {
     codec = codec_type::codecForName("ISO 8859-2");
 }
 WpIRCBase::~WpIRCBase()
 {
-
 }
 
 void
 WpIRCBase::connect()
 {
-    //irc_connection = new tcp_socket_type(this);
     irc_connection.connectToHost(
             this->wp_settings->get_server(),
             this->wp_settings->get_port()
@@ -47,9 +47,8 @@ WpIRCBase::connect()
 void
 WpIRCBase::on_connect()
 {
-    //qDebug() << "connected!";
     this->send_nick(
-            nick_to_wp(
+            utils::nick_to_wp(
                 wp_settings->get_nick(), 
                 wp_settings->get_auth())
             );
@@ -62,10 +61,7 @@ WpIRCBase::on_connect()
 void
 WpIRCBase::handle_command(const map_list_type &parsed_line)
 {
-    //qDebug() << parsed_line;
-
     string_type command = parsed_line["command"][0];
-    //qDebug() << command;
     if(command == "MAGIC" )
     {
         IRC_on_magic(parsed_line);
@@ -102,25 +98,28 @@ WpIRCBase::handle_command(const map_list_type &parsed_line)
     {
         IRC_on_notice(parsed_line);
     }
+
+    else if(command == "UMAGIC")
+    {
+        IRC_on_umagic(parsed_line);
+    }
 }
 
 void
 WpIRCBase::on_incoming_data()
 {
     string_type line;
-    line = irc_connection.readLine();
-    //qDebug() << line;
-    line = codec->toUnicode(line.toAscii());
+    //line = irc_connection.readLine();
+    line = codec->toUnicode(
+            irc_connection.readLine()
+            );
+
     qDebug() << line;
+
     map_list_type parsed_line(this->parse_msg(line));
     this->handle_command(parsed_line);
 
-
-    
-    if(irc_connection.canReadLine())
-    {
-        on_incoming_data();
-    }
+    if(irc_connection.canReadLine()){on_incoming_data();}
 }
 
 void
@@ -137,6 +136,11 @@ WpIRCBase::parse_msg(string_type line)const
     //:<prefix> <command> <params> :<trailing>
     //PING :<server>
     //MAGICU 88fc209d1da5b734f7e674624c319505
+    //:wpserv@czati1a.wp.pl MODE #seks -v bpi-colo|de00 
+    if(!line.contains(':'))
+    {
+
+    }
 
     if(line.at(0) == ':')
     {
@@ -162,10 +166,7 @@ WpIRCBase::parse_msg(string_type line)const
     }
     else 
     {
-        //qDebug() << " no : ";
-
     }
-
 
     return return_map;
 
@@ -174,13 +175,10 @@ WpIRCBase::parse_msg(string_type line)const
 void
 WpIRCBase::send_data(const string_type &line)
 {
-    qDebug() << line;
-
     string_type newline("%1\r\n");
-
     this->irc_connection.write(newline.arg(line).toAscii());
-
 }
+
 void
 WpIRCBase::IRC_on_magic(const map_list_type &parsed_line)
 {
@@ -192,8 +190,8 @@ void
 WpIRCBase::send_magic(const string_type &magic, const string_type &salt)
 {
 
-    string_type line("USER 192.128.1.2 8 %1 :Czat-Applet");
-    string_type hash(hasher(magic, salt));
+    string_type line(realname);
+    string_type hash(utils::hasher(magic, salt));
     this->send_data(line.arg(hash));
 }
 void
@@ -207,7 +205,8 @@ void
 WpIRCBase::IRC_on_ping(const map_list_type &parsed_line)
 {
 
-    this->send_pong("dupa");
+    qDebug() << parsed_line;
+    this->send_pong(parsed_line["params"][0]);
 }
 void
 WpIRCBase::send_pong(const string_type &server)
@@ -229,14 +228,17 @@ WpIRCBase::IRC_on_484(const map_list_type &parsed_line)
 void
 WpIRCBase::IRC_on_433(const map_list_type &parsed_line)
 {
-qDebug() << "oops";
+    qDebug() << "this nickname is already taken"; 
+    // there's no way to change it on the fly, unfortunately :c
+
+
 }
 
 
 void
 WpIRCBase::IRC_on_notice(const map_list_type &parsed_line)
 {
-    qDebug() << "notice";
+    //qDebug() << "notice";
 }
 
 void
@@ -254,41 +256,42 @@ WpIRCBase::send_join(const string_type &channel)
 {
     string_type line("WPJOIN %1");
     this->send_data(line.arg(channel));
-    //TODO: some fancy way to figure out whether we've joined the channel.
+    //TODO: some fancy way to figure out whether we've actually joined the channel.
     wp_logger.add_channel(channel);
 
 }
 void
 WpIRCBase::IRC_on_mode(const map_list_type &parsed_line)
 {
-
 }
 
 
 void
 WpIRCBase::IRC_on_quit(const map_list_type &parsed_line)
 {
-
 }
 
 void
 WpIRCBase::IRC_on_privmsg(const map_list_type &parsed_line)
 {
-
 }
 
 
 void
 WpIRCBase::IRC_on_join(const map_list_type &parsed_line)
 {
-
 }
 
 
 void
 WpIRCBase::IRC_on_part(const map_list_type &parsed_line)
 {
+}
 
+
+void
+WpIRCBase::IRC_on_umagic(const map_list_type &parsed_line)
+{
 }
 
 

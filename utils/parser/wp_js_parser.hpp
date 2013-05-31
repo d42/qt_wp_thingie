@@ -7,6 +7,8 @@
 
 
 
+namespace utils
+{
 static string_type node_path =
     "/usr/bin/node";
 
@@ -35,3 +37,4 @@ class node_js_parser:public abstract_js_parser
        node_js_parser(object_type *parent=0);
         virtual void parse(const string_type &js);
 };
+}

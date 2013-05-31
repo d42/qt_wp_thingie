@@ -26,6 +26,9 @@
 #include "wp_settings.hpp"
 
 
+namespace utils
+{
+
 
 static bytes_type user_agent =
     "Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0";
@@ -49,7 +52,7 @@ class WpPrepare:public QObject
 
 
 
-    const WpSettings *settings;
+    const settings::WpSettings *settings;
     map_string_type session_variables;
     widget_type captcha_widget;
     image_type captcha;
@@ -71,13 +74,12 @@ class WpPrepare:public QObject
 
 
     public:
-    WpPrepare(const WpSettings &wp_settings);
+    WpPrepare(const settings::WpSettings &wp_settings);
     ~WpPrepare();
-    label_type captcha_window;
 
     string_type get_magic()const;
     string_type get_ticket()const;
-    public slots:
+    private slots:
     void get_html();
     void get_ticket();
     void get_html_finished();
@@ -88,27 +90,8 @@ class WpPrepare:public QObject
     void captcha_input();
 };
 
-
-
-
-//TODO: not in the damn headers
-//template<typename s, typename... Args>
-//url_type&
-//encode_query(url_type &url,  const s &key, const s &value, Args... args )
-//{
-    //encode_query(url, key, value);
-    //return encode_query<s>(url, args...);
-//}
-//template<typename s>
-//url_type&
-//encode_query(url_type &url,  const s &key, const s &value)
-//{
-    //url.addQueryItem(key, value);
-    //return url;
-//}
-
-
 string_type nick_to_wp(const string_type &nick, bool auth=false);
 string_type nick_from_wp(const string_type &nick);
 
 
+}
