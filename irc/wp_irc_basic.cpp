@@ -1,18 +1,3 @@
-// =====================================================================================
-// 
-//       Filename:  wp_irc.basic.cpp
-// 
-//    Description:  
-// 
-//        Version:  1.0
-//        Created:  05/27/2013 10:08:44 PM
-//       Revision:  none
-//       Compiler:  g++
-// 
-//         Author:  DaZ (), daz.root@gmail.com
-//        Company:  
-// 
-// =====================================================================================
 #include "wp_irc_basic.hpp"
 
 namespace irc
@@ -20,7 +5,9 @@ namespace irc
 
 string_type realname("USER 192.128.1.2 8 %1 :Czat-Applet");
 
-WpIRCBase::WpIRCBase(const settings::WpSettings &wp_settings, utils::WpPrepare *parent):parent(parent),wp_settings(&wp_settings),wp_logger(wp_settings)
+WpIRCBase::WpIRCBase(const settings::WpSettings &wp_settings, 
+    utils::WpPrepare *parent):parent(parent), 
+    wp_settings(&wp_settings),wp_logger(wp_settings)
 {
     codec = codec_type::codecForName("ISO 8859-2");
 }
@@ -62,6 +49,7 @@ void
 WpIRCBase::handle_command(const map_list_type &parsed_line)
 {
     string_type command = parsed_line["command"][0];
+    //kill this with fire ;_;
     if(command == "MAGIC" )
     {
         IRC_on_magic(parsed_line);
@@ -98,10 +86,9 @@ WpIRCBase::handle_command(const map_list_type &parsed_line)
     {
         IRC_on_notice(parsed_line);
     }
-
-    else if(command == "UMAGIC")
+    else if(command == "MAGICU")
     {
-        IRC_on_umagic(parsed_line);
+        IRC_on_magicu(parsed_line);
     }
 }
 
@@ -136,7 +123,8 @@ WpIRCBase::parse_msg(string_type line)const
     //:<prefix> <command> <params> :<trailing>
     //PING :<server>
     //MAGICU 88fc209d1da5b734f7e674624c319505
-    //:wpserv@czati1a.wp.pl MODE #seks -v bpi-colo|de00 
+    //:wpserv@czati1a.wp.pl MODE #channel -v foobar
+    //TODO this is evil, should get fixed.
     if(!line.contains(':'))
     {
 
@@ -153,19 +141,19 @@ WpIRCBase::parse_msg(string_type line)const
     {
         line = line.trimmed();
     }
-
-    
     if( line.contains(":"))
     {
-
-        return_map["command"] << line.section(' ',0,0).split(' ');
+        return_map["command"] << line.section(' ',0,0);
         line                  = line.section(' ', 1);
 
         return_map["params"] << line.section(" :",0,0).split(' ');
         return_map["args"]  << line.section(':',1).split(' ');
     }
-    else 
+    else  //no trailing (args)
     {
+        return_map["command"] << line.section(' ',0,0);
+        return_map["args"]  << line.section(' ',1).split(' ');
+
     }
 
     return return_map;
@@ -211,7 +199,7 @@ WpIRCBase::IRC_on_ping(const map_list_type &parsed_line)
 void
 WpIRCBase::send_pong(const string_type &server)
 {
-    string_type line(":PONG %1");
+    string_type line("PONG %1");
 
     this->send_data(line.arg(server));
 
@@ -238,7 +226,6 @@ WpIRCBase::IRC_on_433(const map_list_type &parsed_line)
 void
 WpIRCBase::IRC_on_notice(const map_list_type &parsed_line)
 {
-    //qDebug() << "notice";
 }
 
 void
@@ -290,8 +277,23 @@ WpIRCBase::IRC_on_part(const map_list_type &parsed_line)
 
 
 void
-WpIRCBase::IRC_on_umagic(const map_list_type &parsed_line)
+WpIRCBase::IRC_on_magicu(const map_list_type &parsed_line)
 {
+    string_type magic = parsed_line["args"][0].toLower();
+    string_type oldmagic = parent->get_magic();
+    string_type newmagic;
+    newmagic.reserve(32);
+
+    for (int i = 0; i < 32; i++) 
+    {
+        qint8 i2 = oldmagic.mid(i,1).toInt();
+        qint8 as = magic.mid(i,1).toInt();
+        qint8 k2 = i2 ^ as;
+        newmagic.append(
+                string_type::number(k2,16)
+                );
+    }
+    //TODO: add the sending part
 }
 
 

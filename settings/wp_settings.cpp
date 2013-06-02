@@ -58,7 +58,7 @@ WpSettings::set_defaults()
     d.insert("irc/port", "5579");
     d.insert("irc/channels", "#podstawow,#foo");
     d.insert("irc/port", "5579");
-    d.insert("log/enabled", "false");
+    d.insert("log/enabled", "true");
     d.insert("log/path", "foo/");
     d.insert("log/timeformat", "HH:mm:ss");
 

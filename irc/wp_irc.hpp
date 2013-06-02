@@ -20,14 +20,14 @@ class WpIRC:public WpIRCBase
 
     public:
         WpIRC(const settings::WpSettings &wp_settings, utils::WpPrepare *parent = 0);
-        ~WpIRC();
+        virtual ~WpIRC();
     
     private:
         virtual void IRC_on_quit(const map_list_type &parsed_line);
-        virtual void IRC_on_privmsg(const map_list_type &parsed_line); //nickname in use
-        virtual void IRC_on_notice(const map_list_type &parsed_line); //nickname in use
-        virtual void IRC_on_part(const map_list_type &parsed_line); //nickname in use
-        virtual void IRC_on_join(const map_list_type &parsed_line); //nickname in use
+        virtual void IRC_on_privmsg(const map_list_type &parsed_line); 
+        virtual void IRC_on_notice(const map_list_type &parsed_line);
+        virtual void IRC_on_part(const map_list_type &parsed_line);
+        virtual void IRC_on_join(const map_list_type &parsed_line);
 };
 
 

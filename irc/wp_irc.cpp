@@ -12,26 +12,6 @@ WpIRC::~WpIRC()
 
 }
 
-//void
-//WpIRC::IRC_on_ping(const map_list_type &parsed_line)
-//{
-
-    //this->send_pong("dupa");
-//}
-
-
-//void
-//WpIRC::IRC_on_484(const map_list_type &parsed_line)
-//{
-    //this->join_channels();
-
-//}
-
-//void
-//WpIRC::IRC_on_433(const map_list_type &parsed_line)
-//{
-//qDebug() << "oops";
-//}
 
 void ncm(string_type &nick, string_type &channel, string_type &mesg, const map_list_type &parsed_line)
 {
@@ -45,14 +25,11 @@ void
 WpIRC::IRC_on_notice(const map_list_type &parsed_line)
 {
     string_type line("::%1");
-    //qDebug() << parsed_line;
 
     wp_logger.log_line(line.arg(parsed_line["args"].join(" ")));
 }
 
 
-
-//TODO refactorize me plx
 void
 WpIRC::IRC_on_quit(const map_list_type &parsed_line)
 {

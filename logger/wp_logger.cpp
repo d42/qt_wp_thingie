@@ -7,10 +7,9 @@ namespace logger
 
 WpLogger::WpLogger(const settings::WpSettings &wp_settings):wp_settings(&wp_settings)
 {
-
-
-    sleep(5);
-
+    enabled = wp_settings.get_log_enabled();
+    check(); 
+    add_channel(server_channel);
 
 }
 
@@ -54,7 +53,7 @@ void
 WpLogger::log_line( const string_type &line, string_type location)
 {
 
-    if(!wp_settings->get_log_enabled())
+    if(!enabled)
     {
         return;
     }
@@ -71,11 +70,13 @@ WpLogger::log_line( const string_type &line, string_type location)
         else // it's an actual privmsg!
         {
                 location = utils::nick_from_wp(location);
+
                 if(fl.contains(location))
             {
                 file_type *f = fl[location];
                 this->write(f,line);
             }
+
             else
             {
                 this->add_channel(location);
@@ -87,11 +88,6 @@ WpLogger::log_line( const string_type &line, string_type location)
     }
     else
     {
-
-                if(!fl.contains(server_channel))
-                    {this->add_channel(server_channel);}
-
-
                 file_type *f = fl[server_channel];
                 this->write(f,line);
 
@@ -107,13 +103,12 @@ WpLogger::add_channel(string_type channel)
         return;
     }
     channel = channel.toLower();
-    this->check();
     string_type path("%1/%2");
     file_type *f = new file_type(path
             .arg(wp_settings->get_path())
             .arg(channel)
             );
-    f->open(QIODevice::WriteOnly); // write-only
+    f->open(QIODevice::Append); // write-only
 
     fl.insert(channel, f);
 

@@ -1,23 +1,9 @@
-// =====================================================================================
-// 
-//       Filename:  wp_irc_basic.hpp
-// 
-//    Description:  
-// 
-//        Version:  1.0
-//        Created:  05/27/2013 10:09:38 PM
-//       Revision:  none
-//       Compiler:  g++
-// 
-//         Author:  DaZ (), daz.root@gmail.com
-//        Company:  
-// 
-// =====================================================================================
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextCodec>
 #include <QObject>
+#include <QtGlobal>
 #include <QDebug>
 #include "wp_utils.hpp"
 #include "wp_logger.hpp"
@@ -41,13 +27,13 @@ class WpIRCBase:public object_type
     map_list_type parse_msg(string_type line)const;
     void handle_command(const map_list_type &parsed_line);
 
+    WpIRCBase(WpIRCBase &derp);
+
     public:
-        WpIRCBase(const settings::WpSettings &wp_settings, utils::WpPrepare *parent = 0);
-        ~WpIRCBase();
         void join_channels();
         void set_nick(const string_type &nick);
         void set_realname(const string_type );
-        void send_nick(const string_type &nick); //TODO: separate non-const send 
+        void send_nick(const string_type &nick); 
         void send_user(const string_type &username, const string_type &realname, const string_type &hostname);
         void send_pass(const string_type &pass);
         void send_magic(const string_type &magic, const string_type &salt);
@@ -59,10 +45,12 @@ class WpIRCBase:public object_type
         void connect();
     
     protected:
-        void send_data(const string_type &line);
+        virtual void send_data(const string_type &line);
+        WpIRCBase(const settings::WpSettings &wp_settings, utils::WpPrepare *parent = 0);
+        ~WpIRCBase();
 
         logger::WpLogger wp_logger;
-        virtual void IRC_on_privmsg(const map_list_type &parsed_line); //nickname in use
+        virtual void IRC_on_privmsg(const map_list_type &parsed_line); 
         virtual void IRC_on_magic(const map_list_type &parsed_line);
         virtual void IRC_on_ping(const map_list_type &parsed_line);
         virtual void IRC_on_mode(const map_list_type &parsed_line);
@@ -71,8 +59,8 @@ class WpIRCBase:public object_type
         virtual void IRC_on_quit(const map_list_type &parsed_line);
         virtual void IRC_on_484(const map_list_type &parsed_line); //logged in
         virtual void IRC_on_433(const map_list_type &parsed_line); //nickname in use
-        virtual void IRC_on_notice(const map_list_type &parsed_line); //nickname in use
-        virtual void IRC_on_umagic(const map_list_type &parsed_line); //nickname in use
+        virtual void IRC_on_notice(const map_list_type &parsed_line); 
+        virtual void IRC_on_magicu(const map_list_type &parsed_line); //magic
         //void IRC_on_(const map_list_type &parsed_line);
 
     private slots:

@@ -1,4 +1,3 @@
-#include <QString>
 #include "wp_hasher.hpp"
 
 

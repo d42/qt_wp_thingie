@@ -1,13 +1,4 @@
 #include "wp_utils.hpp"
-//static bytes_type user_agent =
-    //"Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0";
-//static bytes_type java_user_agent =
-    //"User-Agent':'User-Agent: Mozilla/4.0 (Windows 7 6.1) Java/1.7.0_09";
-////url_type captcha_url =
-    ////string_type("http://si.wp.pl/obrazek?width=200&height=60&fSize=27&sn=czat");
-//static url_type html_applet_url("http://czat.wp.pl/i,1,chat.html");
-//static url_type html_ticket_url("http://czati1.wp.pl/getticket.html");
-
 
 namespace utils
 {
@@ -20,8 +11,6 @@ WpPrepare::WpPrepare(const settings::WpSettings &wp_settings):settings(&wp_setti
 
     connect(this, SIGNAL(params_to_dictionary_finished()),
             this, SLOT(get_ticket()));
-
-    //this->network_manager.setCookieJar(new cookiejar_type);
 
 
     this->get_captcha();
@@ -98,7 +87,6 @@ WpPrepare::get_captcha(const url_type &captcha_url /*=captcha_url */)
 void
 WpPrepare::get_captcha_finished()
 {
-    //FIXME: error handling
         reply  = qobject_cast<network_reply_type *> (sender());
     
         url_type redirect_url(reply->attribute ( QNetworkRequest::RedirectionTargetAttribute ).toUrl());
@@ -144,7 +132,6 @@ WpPrepare::captcha_resolve() //TODO: less retarded
 void
 WpPrepare::captcha_input()
 {
-    //qDebug() << "captcha_input ";
     line_edit_type *captcha = qobject_cast<line_edit_type*>(sender());
     this->session_variables["captcha"] = captcha->text();
     captcha->parentWidget()->hide();
@@ -239,21 +226,19 @@ string_type
 nick_to_wp(const string_type &nick, bool auth)
 {
 
-
-    //TODO: make it do weird stuff
-    unsigned len = (1 + nick.length()/2); //TODO: more testing
+    unsigned len = (1 + nick.length()/2);
     len = (len % 2 ? len+1 : len);
     string_type cap_letters;
     string_type pol_letters;
-    cap_letters.reserve(len/2);
-    pol_letters.reserve(len/2);
+    cap_letters.reserve(len/2); // len is kind of a half already, so /4
+    pol_letters.reserve(len/2); // because Fh = 1111b
     string_type formatted_nick;
     formatted_nick.reserve(len+nick.length()+1);
     if(!auth)
         {formatted_nick.append("a");}
     for(auto &x_p: nick)
     {
-        char_type x(x_p); //TODO: can i make this less retarded
+        char_type x(x_p); //TODO: is this t
         if(x.isUpper())
         {
             cap_letters.append("1");
@@ -287,7 +272,6 @@ nick_to_wp(const string_type &nick, bool auth)
 string_type
 nick_from_wp(const string_type &nickname)
 {
-    //qDebug() << pol_chars  << int_chars;
     if(!nickname.contains('|'))
         {return nickname;}
 
@@ -328,6 +312,12 @@ WpPrepare::get_magic()const
 {
     return this->session_variables["magic"];
 }
+
+//void
+//set_magic(const string_type &magic)
+//{
+    //this->session_variables["magic"] = magic;
+//}
 string_type
 WpPrepare::get_ticket()const
 {

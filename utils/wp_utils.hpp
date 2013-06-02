@@ -33,7 +33,7 @@ namespace utils
 static bytes_type user_agent =
     "Mozilla/5.0 (Windows NT 6.1; rv:16.0) Gecko/20100101 Firefox/16.0";
 static bytes_type java_user_agent =
-    "User-Agent':'User-Agent: Mozilla/4.0 (Windows 7 6.1) Java/1.7.0_09";
+    "Mozilla/4.0 (Windows 7 6.1) Java/1.7.0_09";
 
 static url_type 
     html_applet_url("http://czat.wp.pl/i,1,chat.html");
@@ -78,6 +78,7 @@ class WpPrepare:public QObject
     ~WpPrepare();
 
     string_type get_magic()const;
+    //void set_magic(const string_type &magic);
     string_type get_ticket()const;
     private slots:
     void get_html();

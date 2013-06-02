@@ -1,4 +1,3 @@
-//container types
 typedef QString string_type;
 typedef QUrl url_type;
 typedef QChar char_type;

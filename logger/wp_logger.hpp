@@ -18,6 +18,7 @@ namespace logger
 class WpLogger {
 
 
+    bool enabled;
     file_list_type fl;
     const settings::WpSettings *wp_settings;
 

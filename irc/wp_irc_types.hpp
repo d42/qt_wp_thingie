@@ -1,3 +1,4 @@
+//TODO less files that are just a list of typedefs.
 typedef QString string_type;
 typedef QTcpSocket tcp_socket_type;
 typedef QObject object_type;
